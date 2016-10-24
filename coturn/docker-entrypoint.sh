@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 PROCNAME='turnserver'
 DAEMON='/usr/bin/turnserver'
