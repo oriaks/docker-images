@@ -22,7 +22,7 @@ RUN sed -i 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf
 
 COPY docker.cnf /etc/mysql/conf.d/docker.cnf
 
-COPY docker-entrypoint.sh /
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 3306/tcp

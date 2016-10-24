@@ -28,7 +28,7 @@ RUN for file in /etc/apache2/mods-enabled/*.conf; do \
 
 RUN cp -Rp /var/www/html /var/www/html.default
 
-COPY docker-entrypoint.sh /
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80/tcp

@@ -11,7 +11,7 @@ RUN apt-get update -qy && \
 
 COPY interface.conf /etc/unbound/unbound.conf.d/interface.conf
 
-COPY docker-entrypoint.sh /
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 53/tcp

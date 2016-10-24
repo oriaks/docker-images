@@ -21,7 +21,7 @@ COPY freeswitch.xml /etc/freeswitch/freeswitch.xml
 COPY ldap.conf /etc/ldap/ldap.conf
 COPY vars.xml /etc/freeswitch/vars.xml
 
-COPY docker-entrypoint.sh /
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 5060/tcp

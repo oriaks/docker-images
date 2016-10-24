@@ -17,7 +17,7 @@ COPY turnserver.conf /etc/coturn/turnserver.conf
 COPY ldap2turn.sh /
 RUN chmod +x /ldap2turn.sh
 
-COPY docker-entrypoint.sh /
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 3478/tcp

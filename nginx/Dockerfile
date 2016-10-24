@@ -19,7 +19,7 @@ COPY default.conf /etc/nginx/conf.d/
 RUN mkdir -p /var/www && \
     cp -Rp /usr/share/nginx/html /var/www/
 
-COPY docker-entrypoint.sh /
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 80/tcp

@@ -18,7 +18,7 @@ COPY ldapvirc /root/.ldapvirc
 COPY schema/ /etc/ldap/schema/
 COPY slapd.init.ldif /usr/share/slapd/slapd.init.ldif
 
-COPY docker-entrypoint.sh /
+COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 389/tcp
