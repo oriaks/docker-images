@@ -11,8 +11,12 @@ RUN apt-get update -qy && \
 
 RUN ln -sf /proc/self/fd/1 /var/log/apache2/access.log && \
     ln -sf /proc/self/fd/2 /var/log/apache2/error.log
+RUN mkdir -p /etc/apache2/vhost.d
 
 COPY remoteip.conf /etc/apache2/mods-available/remoteip.conf
+COPY 000-default.conf /etc/apache2/sites-available/000-default.conf
+COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+COPY default.conf /etc/apache2/vhost.d/default.conf
 
 RUN for file in /etc/apache2/mods-enabled/*.conf; do \
       ln -sf `echo $file | sed 's|mods-enabled|mods-available|;'` $file; \
