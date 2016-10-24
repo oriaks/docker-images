@@ -1,0 +1,18 @@
+<include>
+  <X-PRE-PROCESS cmd="set" data="domain="/>
+
+  <X-PRE-PROCESS cmd="set" data="sip_port=5060"/>
+  <X-PRE-PROCESS cmd="set" data="sip_int_ip="/>
+  <X-PRE-PROCESS cmd="set" data="sip_ext_ip="/>
+
+  <X-PRE-PROCESS cmd="set" data="log_level=warning"/>
+  <X-PRE-PROCESS cmd="set" data="debug_sip=true"/>
+
+  <X-PRE-PROCESS cmd="set" data="ldap_url=ldaps://ldap"/>
+  <X-PRE-PROCESS cmd="set" data="ldap_binddn="/>
+  <X-PRE-PROCESS cmd="set" data="ldap_bindpass="/>
+  <X-PRE-PROCESS cmd="set" data="ldap_basedn="/>
+  <X-PRE-PROCESS cmd="set" data="ldap_filter=(&amp;(objectClass=inetOrgPerson)(objectClass=SIPIdentity)(uid=%s))"/>
+  <X-PRE-PROCESS cmd="set" data="ldap_sip_id=uid"/>
+  <X-PRE-PROCESS cmd="set" data="ldap_sip_password=SIPIdentityPassword"/>
+</include>

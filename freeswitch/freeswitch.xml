@@ -1,0 +1,89 @@
+<?xml version="1.0"?>
+<document type="freeswitch/xml">
+  <X-PRE-PROCESS cmd="include" data="vars.xml"/>
+  <section name="configuration" description="Various Configuration">
+    <configuration name="modules.conf" description="Modules">
+      <modules>
+        <load module="mod_console"/>
+        <load module="mod_dialplan_xml"/>
+        <load module="mod_dptools"/>
+        <load module="mod_logfile"/>
+        <load module="mod_sofia"/>
+        <load module="mod_xml_ldap"/>
+      </modules>
+    </configuration>
+    <configuration name="console.conf" description="Console Logger">
+      <settings>
+        <param name="loglevel" value="$${log_level}"/>
+      </settings>
+      <mappings>
+        <map name="all" value="console,debug,info,notice,warning,err,crit,alert"/>
+      </mappings>
+    </configuration>
+    <configuration name="logfile.conf" description="File Logging">
+      <profiles>
+        <profile name="default">
+          <settings>
+            <param name="logfile" value="/dev/null"/>
+            <param name="loglevel" value="0"/>
+          </settings>
+        </profile>
+      </profiles>
+    </configuration>
+    <configuration name="sofia.conf" description="sofia Endpoint">
+      <global_settings>
+        <param name="debug-presence" value="$${log_level}"/>
+        <param name="log-level" value="$${log_level}"/>
+        <param name="tracelevel" value="$${log_level}"/>
+      </global_settings>
+      <profiles>
+        <profile name="default">
+          <settings>
+            <param name="auth-calls" value="true"/>
+            <param name="context" value="$${domain}"/>
+            <param name="dialplan" value="XML"/>
+            <param name="ext-sip-ip" value="$${sip_ext_ip}"/>
+            <param name="inbound-bypass-media" value="true"/>
+            <param name="inbound-late-negotiation" value="true"/>
+            <param name="manage-presence" value="true"/>
+            <param name="presence-privacy" value="true"/>
+            <!-- param name="sip-ip" value="$${sip_int_ip}"/ -->
+            <param name="sip-port" value="$${sip_port}"/>
+            <param name="sip-trace" value="$${debug_sip}"/>
+          </settings>
+        </profile>
+      </profiles>
+    </configuration>
+    <configuration name="switch.conf" description="Core Configuration">
+      <settings>
+        <param name="loglevel" value="$${log_level}"/>
+      </settings>
+    </configuration>
+    <configuration name="xml_ldap.conf" description=" XML LDAP Gateway">
+      <bindings>
+        <binding name="directory">
+          <param name="basedn" value="$${ldap_basedn}"/>
+          <param name="binddn" value="$${ldap_binddn}"/>
+          <param name="bindpass" value="$${ldap_bindpass}"/>
+          <param name="filter" value="$${ldap_filter}" bindings="directory"/>
+          <param name="url" value="$${ldap_url}"/>
+          <trans>
+            <tran name="id" mapfrom="$${ldap_sip_id}"/>
+            <tran name="password" mapfrom="$${ldap_sip_password}"/>
+          </trans>
+        </binding>
+      </bindings>
+    </configuration>
+  </section>
+  <section name="dialplan" description="Regex/XML Dialplan">
+    <context name="$${domain}">
+      <extension name="default">
+        <condition field="${sip_authorized}" expression="^true$">
+          <action application="export" data="sip_invite_domain=$${domain}"/>
+          <action application="bridge" data="sofia/default/${destination_number}%$${domain}"/>
+          <anti-action application="respond" data="407"/>
+        </condition>
+      </extension>
+    </context>
+  </section>
+</document>
