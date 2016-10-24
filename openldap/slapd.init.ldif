@@ -1,0 +1,159 @@
+# Global config:
+dn: cn=config
+objectClass: olcGlobal
+cn: config
+# Where the pid file is put. The init.d script
+# will not stop the server if you change this.
+olcPidFile: /var/run/slapd/slapd.pid
+# List of arguments that were passed to the server
+olcArgsFile: /var/run/slapd/slapd.args
+# Read slapd.conf(5) for possible values
+olcLogLevel: none
+# The tool-threads parameter sets the actual amount of cpu's that is used
+# for indexing.
+olcToolThreads: 1
+# LDAP version
+olcRequires: LDAPv3
+# TLS
+#olcTLSCipherSuite: SECURE256:+SECURE128:-VERS-TLS-ALL:+VERS-TLS1.2:-RSA:-DHE-DSS:-CAMELLIA-128-CBC:-CAMELLIA-256-CBC
+olcTLSCertificateFile: /etc/ssl/certs/ssl-cert-snakeoil.pem
+olcTLSCertificateKeyFile: /etc/ssl/private/ssl-cert-snakeoil.key
+#olcTLSDHParamFile: /etc/ldap/cert.d/dhparam.pem
+olcTLSVerifyClient: never
+olcLocalSSF: 128
+olcSecurity: simple_bind=128 ssf=128 tls=0 update_ssf=128
+
+# Frontend settings
+dn: olcDatabase={-1}frontend,cn=config
+objectClass: olcDatabaseConfig
+objectClass: olcFrontendConfig
+olcDatabase: {-1}frontend
+# The maximum number of entries that is returned for a search operation
+olcSizeLimit: 500
+# Allow unlimited access to local connection from the local root user
+olcAccess: {0}to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
+# Allow unauthenticated read access for schema and base DN autodiscovery
+olcAccess: {1}to dn.exact="" by * read
+olcAccess: {2}to dn.base="cn=Subschema" by * read
+
+# Config db settings
+dn: olcDatabase=config,cn=config
+objectClass: olcDatabaseConfig
+olcDatabase: config
+# Allow unlimited access to local connection from the local root user
+olcAccess: to * by dn.exact=gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth manage by * break
+olcRootDN: cn=admin,cn=config
+
+# Load schemas
+dn: cn=schema,cn=config
+objectClass: olcSchemaConfig
+cn: schema
+
+include: file:///etc/ldap/schema/core.ldif
+include: file:///etc/ldap/schema/cosine.ldif
+include: file:///etc/ldap/schema/nis.ldif
+include: file:///etc/ldap/schema/inetorgperson.ldif
+include: file:///etc/ldap/schema/misc.ldif
+include: file:///etc/ldap/schema/hdb.ldif
+include: file:///etc/ldap/schema/openssh-lpk.ldif
+include: file:///etc/ldap/schema/samba.ldif
+include: file:///etc/ldap/schema/sipidentity.ldif
+
+# Load module
+dn: cn=module{0},cn=config
+objectClass: olcModuleList
+cn: module{0}
+olcModulePath: /usr/lib/ldap
+olcModuleLoad: back_@BACKEND@
+olcModuleLoad: memberof
+olcModuleLoad: refint
+
+# Set defaults for the backend
+dn: olcBackend=@BACKEND@,cn=config
+objectClass: olcBackendConfig
+olcBackend: @BACKEND@
+
+# The database definition.
+dn: olcDatabase=@BACKEND@,cn=config
+objectClass: olcDatabaseConfig
+objectClass: @BACKENDOBJECTCLASS@
+olcDatabase: @BACKEND@
+olcDbCheckpoint: 512 30
+@BACKENDOPTIONS@
+olcLastMod: TRUE
+olcSuffix: @SUFFIX@
+olcDbDirectory: /var/lib/ldap
+olcRootDN: cn=admin,@SUFFIX@
+olcRootPW: @PASSWORD@
+olcDbIndex: entryCSN,entryUUID eq
+olcDbIndex: objectClass eq
+olcDbIndex: uid,krb5PrincipalName eq
+olcDbIndex: cn,givenName,sn eq,pres,sub
+olcDbIndex: uidNumber,gidNumber eq
+olcDbIndex: member,memberUid,memberOf eq
+olcDbIndex: mail eq,pres,sub
+olcAccess: to attrs=member,mailRoutingAddress
+  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+  by dn.exact="cn=admin,@SUFFIX@" manage
+  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
+  by dnattr=owner write
+  by users read
+  by * none
+olcAccess: to attrs=krb5KDCFlags,krb5MaxLife,krb5MaxRenew,sambaNTPassword,shadowLastChange,SIPIdentityPassword,userPassword
+  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+  by dn.exact="cn=admin,@SUFFIX@" manage
+  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
+  by self write
+  by users read
+  by anonymous auth
+  by * none
+olcAccess: to attrs=ipHostNumber,krb5PrincipalName,macAddress,objectClass,ou,owner,uid
+  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+  by dn.exact="cn=admin,@SUFFIX@" manage
+  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
+  by self read
+  by users read
+  by anonymous auth
+  by * none
+olcAccess: to attrs=krb5Key,krb5KeyVersionNumber,sshPublicKey
+  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+  by dn.exact="cn=admin,@SUFFIX@" manage
+  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
+  by self write
+  by anonymous auth
+  by * none
+olcAccess: to attrs=cn,givenName,displayName,employeeType,l,mail,mobile,o,postalCode,preferredLanguage,sn,st,street,telephoneNumber,title
+  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+  by dn.exact="cn=admin,@SUFFIX@" manage
+  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
+  by self write
+  by users read
+  by * none
+olcAccess: to *
+  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+  by dn.exact="cn=admin,@SUFFIX@" manage
+  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
+  by users read
+  by * none
+
+# Backend memberOf overlay
+dn: olcOverlay={0}memberof,olcDatabase={1}@BACKEND@,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcMemberOf
+olcOverlay: {0}memberof
+olcMemberOfDangling: ignore
+olcMemberOfRefInt: TRUE
+olcMemberOfGroupOC: groupOfNames
+olcMemberOfMemberAD: member
+olcMemberOfMemberOfAD: memberOf
+
+# Backend refint overlay
+dn: olcOverlay={1}refint,olcDatabase={1}@BACKEND@,cn=config
+objectClass: olcOverlayConfig
+objectClass: olcRefintConfig
+olcOverlay: {1}refint
+olcRefintAttribute: owner
+olcRefintAttribute: manager
+olcRefintAttribute: uniqueMember
+olcRefintAttribute: member
+olcRefintAttribute: memberOf
