@@ -55,7 +55,7 @@ EOF
   TMPFILE=`mktemp`
   chown mysql:mysql "${TMPFILE}"
   printf "%s\n" "${SQL[@]}" > "${TMPFILE}"
-  mysqld --skip-networking --init-file="${TMPFILE}"
+  mysqld --skip-networking --init-file="${TMPFILE}" --initialize
   rm -f "${TMPFILE}"
 
 fi
