@@ -18,7 +18,7 @@ RUN apt-get update -qy && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
     rm -rf /var/lib/mysql/* /var/log/mysql/*
 
-RUN sed -i 's/^(bind-address|log)/#&/' /etc/mysql/my.cnf
+RUN sed -Ei 's/^(bind-address|log)/#&/g;' /etc/mysql/my.cnf
 
 COPY docker.cnf /etc/mysql/conf.d/docker.cnf
 
