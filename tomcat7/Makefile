@@ -1,5 +1,5 @@
 NAME = oriaks/tomcat
-VERSION = 7.0
+VERSION = 7
 
 .PHONY: all build tag_latest
 
