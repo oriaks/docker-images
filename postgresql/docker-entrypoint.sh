@@ -53,7 +53,7 @@ EOF
   fi
 
   for QUERY in "${SQL[@]}"; do
-    echo "${QUERY}" | su -c "/usr/lib/postgresql/${PGSQL_VERSION}/bin/postgres --single -D /var/lib/postgresql/${PGSQL_VERSION}/main" -l postgres
+    echo "${QUERY}" | su -c "${DAEMON} --single -D /var/lib/postgresql/${PGSQL_VERSION}/main" -l postgres
   done
 
   mkdir -p "/var/run/postgresql/${PGSQL_VERSION}-main.pg_stat_tmp"
