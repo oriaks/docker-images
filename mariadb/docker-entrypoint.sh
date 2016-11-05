@@ -2,7 +2,7 @@
 
 PROCNAME='mysqld'
 DAEMON='/usr/sbin/mysqld'
-DAEMON_ARGS=( )
+DAEMON_ARGS=( --init-file /etc/mysql/init.sql )
 
 if [ -z "$1" ]; then
   set -- "${DAEMON}" "${DAEMON_ARGS[@]}"
@@ -25,7 +25,7 @@ if [ "$1" = "${DAEMON}" ]; then
   SQL=()
 
   if [ -n "${MYSQL_ROOT_PASSWORD}" ]; then
-    mysqld --bootstrap <<- EOF
+    ${DAEMON} --bootstrap <<- EOF
 	UPDATE mysql.user SET password=PASSWORD('${MYSQL_ROOT_PASSWORD}') WHERE user='root';
 EOF
     cat > /root/.my.cnf <<- EOF
@@ -52,11 +52,8 @@ EOF
     SQL+=( "FLUSH PRIVILEGES;" )
   fi
 
-  TMPFILE=`mktemp`
-  chown mysql:mysql "${TMPFILE}"
-  printf "%s\n" "${SQL[@]}" > "${TMPFILE}"
-  mysqld --skip-networking --init-file="${TMPFILE}" --initialize
-  rm -f "${TMPFILE}"
+  printf "%s\n" "${SQL[@]}" > /etc/mysql/init.sql
+  chown mysql:mysql /etc/mysql/init.sql
 
 fi
 
