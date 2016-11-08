@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+   mysql:
+     image: mariadb:latest
+     restart: always
+     ports:
+       - "3306:3306"
+     environment:
+       MYSQL_ROOT_PASSWORD: password
+       MYSQL_DATABASE: opendcim
+       MYSQL_USER: opendcim
+       MYSQL_PASSWORD: opendcim
+
+   dcim:
+     depends_on:
+       - mysql
+     image: oriaks/opendcim:latest
+     links:
+       - mysql
+     ports:
+       - "443:443"
+     restart: always
+     environment:
+       DCIM_MYSQL_HOST: mysql
