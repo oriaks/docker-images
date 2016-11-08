@@ -5,7 +5,7 @@
 FROM debian:jessie
 MAINTAINER Karol Kozubal <karol.kozubal@oriaks.com>
 
-EXPOSE 80 443
+EXPOSE 443
 
 ENV DCIM_MYSQL_HOST mysql 
 ENV DCIM_DBNAME opendcim
