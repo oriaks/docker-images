@@ -1,6 +1,4 @@
 # openDCIM Dockerfile
-# @TODO Add LDAP authentication for Apache
-# @TODO 
 
 FROM debian:jessie
 MAINTAINER Karol Kozubal <karol.kozubal@oriaks.com>
@@ -56,3 +54,10 @@ RUN a2enmod ssl && \
 
 CMD ["-D", "FOREGROUND"]
 ENTRYPOINT ["apachectl"]
+
+# @TODO move env variables near end of file to avoid recompilation of entire image when small changes are made
+# @TODO leave original sources.list intact, add /etc/apt/sources.d/nonfree.list
+# @TODO add -qy to apt-get commands to ensure prettier output to console during container compilation
+# @TODO change webroot to /opt ... use a regular directory
+# @TODO use curl instead of wget
+# @TODO Add LDAP auth to apache
