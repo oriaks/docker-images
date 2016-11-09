@@ -3,19 +3,12 @@
 FROM debian:jessie
 MAINTAINER Karol Kozubal <karol.kozubal@oriaks.com>
 
-EXPOSE 443
+COPY nonfree.list /etc/apt/sources.d/nonfree.list
 
-ENV DCIM_MYSQL_HOST mysql 
-ENV DCIM_DBNAME opendcim
-ENV DCIM_DBUSER opendcim
-ENV DCIM_DBPASS opendcim
-ENV DEBIAN_FRONTEND=noninteractive
-
-COPY sources.list /etc/apt/sources.list
-
-RUN apt-get update -y && \
-    apt-get install -y \
+RUN apt-get update -qy && \
+    apt-get install -qy \
     apache2 \
+    curl \
     graphviz \
     locales \
     php5 \
@@ -23,10 +16,10 @@ RUN apt-get update -y && \
     php-gettext \
     php5-mysql \
     php5-snmp \
-    snmp-mibs-downloader \
-    wget
+    snmp-mibs-downloader
 
 # Fixing locale data, openDCIM uses this for setting the app language
+ENV DEBIAN_FRONTEND=noninteractive
 RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
     locale-gen en_US.UTF-8 && \
     dpkg-reconfigure locales && \
@@ -34,7 +27,7 @@ RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && \
 ENV LC_ALL en_US.UTF-8
 
 RUN cd /var/www && \
-    wget http://opendcim.org/packages/openDCIM-4.3.1.tar.gz && \
+    curl -O http://opendcim.org/packages/openDCIM-4.3.1.tar.gz && \
     tar -xvf openDCIM-4.3.1.tar.gz && \
     rm -f openDCIM-4.3.1.tar.gz && \
     ln -s openDCIM-4.3.1 dcim
@@ -51,13 +44,16 @@ RUN a2enmod ssl && \
     a2enmod rewrite && \
     a2ensite default-ssl && \
     service apache2 restart
+ 
+ENV DCIM_MYSQL_HOST mysql 
+ENV DCIM_DBNAME opendcim
+ENV DCIM_DBUSER opendcim
+ENV DCIM_DBPASS opendcim
+
+EXPOSE 443
 
 CMD ["-D", "FOREGROUND"]
 ENTRYPOINT ["apachectl"]
 
-# @TODO move env variables near end of file to avoid recompilation of entire image when small changes are made
-# @TODO leave original sources.list intact, add /etc/apt/sources.d/nonfree.list
-# @TODO add -qy to apt-get commands to ensure prettier output to console during container compilation
 # @TODO change webroot to /opt ... use a regular directory
-# @TODO use curl instead of wget
 # @TODO Add LDAP auth to apache
