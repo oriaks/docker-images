@@ -18,15 +18,45 @@ elif [ "${1}" = "${PROCNAME}" ]; then
 fi
 
 if [ "$1" = "${DAEMON}" ]; then
+  export SMTP_FROM="${SMTP_FROM:=}"
+  export SMTP_HOST="${SMTP_HOST:=smtp}"
+  export SMTP_PASSWORD="${SMTP_PASSWORD:=}"
+  export SMTP_STARTTLS="${SMTP_STARTTLS:=NO}"
+  export SMTP_TLS="${SMTP_TLS:=NO}"
+  export SMTP_USER="${SMTP_USER:=}"
+  export VIRTUAL_HOST="${VIRTUAL_HOST:=}"
+
+  if [ -z "${SMTP_PORT}" ]; then
+    if [ "${SMTP_STARTTLS}" = "YES" ]; then
+      export SMTP_PORT='587'
+    elif [ "${SMTP_TLS}" = "YES" ]; then
+      export SMTP_PORT='465'
+    else
+      export SMTP_PORT='25'
+    fi
+  fi
+
+  if [ "${SMTP_STARTTLS}" = "YES" ]; then
+    export SMTP_TLS='YES'
+  fi
+
   if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem -o ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]; then
     dpkg-reconfigure ssl-cert
   fi
 
-  if [ ! `find /var/www/html -type f | wc -l` -gt 0 ]; then
-    chown --reference /var/www/html.default /var/www/html
-    chmod --reference /var/www/html.default /var/www/html
-    cp -Rp /var/www/html.default/* /var/www/html/
-  fi
+  SSMTP=()
+  REVALIASES=()
+
+  [ -n "${SMTP_FROM}"     ] && REVALIASES+=( "root:${SMTP_FROM}" "www-data:${SMTP_FROM}" )
+  [ -n "${SMTP_HOST}"     ] && SSMTP+=( "mailhub=${SMTP_HOST}:${SMTP_PORT}" )
+  [ -n "${SMTP_PASSWORD}" ] && SSMTP+=( "AuthPass=${SMTP_PASSWORD}" )
+  [ -n "${SMTP_STARTTLS}" ] && SSMTP+=( "UseSTARTTLS=${SMTP_STARTTLS}" )
+  [ -n "${SMTP_TLS}"      ] && SSMTP+=( "UseTLS=${SMTP_TLS}" )
+  [ -n "${SMTP_USER}"     ] && SSMTP+=( "AuthUser=${SMTP_USER}" )
+  [ -n "${VIRTUAL_HOST}"  ] && SSMTP+=( "hostname=${VIRTUAL_HOST}" )
+
+  printf "%s\n" "${REVALIASES[@]}" > /etc/ssmtp/revaliases
+  printf "%s\n" "${SSMTP[@]}" > /etc/ssmtp/ssmtp.conf
 
   . /etc/apache2/envvars
 
