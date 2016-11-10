@@ -21,6 +21,7 @@ RUN apt-get update -qy && \
     php5-mysql \
     php5-snmp \
     snmp-mibs-downloader \
+    sed \
     ssl-cert
 
 # Fixing locale data, openDCIM uses this for setting the app language
@@ -44,6 +45,7 @@ RUN chgrp -R www-data /opt/www/opendcim/pictures /opt/www/opendcim/drawings
 
 COPY db.inc.php /opt/www/opendcim/db.inc.php 
 COPY default-ssl.conf /etc/apache2/sites-available/default-ssl.conf
+COPY default-ssl.conf.ldap /etc/apache2/sites-available/default-ssl.conf.ldap
 COPY htaccess /opt/www/opendcim/.htaccess
 
 RUN htpasswd -cb /opt/www/opendcim.password dcim dcim
@@ -59,11 +61,21 @@ ENV DCIM_DBNAME opendcim
 ENV DCIM_DBUSER opendcim
 ENV DCIM_DBPASS opendcim
 
+# Specify if openDCIM should use LDAP Authentication
+ENV AUTHLDAP no
+
+# Apache LDAP AUth Config default values
+# overwrite values in docker-compose or with docker run -e
+ENV AUTHLDAPURL="AuthLDAPURL ldaps://ldap.example.org/dc=example,dc=org"
+ENV AUTHLDAPBINDDN="AuthLDAPBindDN uid=intranet,ou=applications,dc=example,dc=org"
+ENV AUTHLDAPBINDPASSWORD="AuthLDAPBindPassword ldappassword"
+ENV REQUIRE="Require ldap-group cn=example,ou=groups,dc=example,dc=org"
+
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 443
 VOLUME /opt/www
 
-ENTRYPOINT ["/docker-entrypoint.sh"]
+ENTRYPOINT [ "/docker-entrypoint.sh" ]
 CMD [ "apache2" ]
