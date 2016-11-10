@@ -18,6 +18,11 @@ elif [ "${1}" = "${PROCNAME}" ]; then
 fi
 
 if [ "$1" = "${DAEMON}" ]; then
+  export MYSQL_DATABASE="${MYSQL_DATABASE:=}"
+  export MYSQL_PASSWORD="${MYSQL_PASSWORD:=}"
+  export MYSQL_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:=`head -c1M /dev/urandom | sha1sum | cut -d' ' -f1`}"
+  export MYSQL_USER="${MYSQL_USER:=}"
+
   if [ ! -d /var/lib/mysql/mysql ]; then
     mysql_install_db
   fi

@@ -1,0 +1,11 @@
+mariadb:
+  image: oriaks/mariadb:latest
+  environment:
+    MYSQL_DATABASE: test
+    MYSQL_USER: test
+    MYSQL_PASSWORD: test
+  ports:
+    - 0.0.0.0:3306:3306/tcp
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mysql
