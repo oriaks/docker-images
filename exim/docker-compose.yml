@@ -1,7 +1,7 @@
 exim:
   image: oriaks/exim:latest
   environment:
-    SMTP_MAILNAME: notprod.com
+    SMTP_MAILNAME: localhost
   ports:
     - 0.0.0.0:25:25/tcp
     - 0.0.0.0:465:465/tcp
