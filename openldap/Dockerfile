@@ -2,13 +2,29 @@ FROM debian:jessie
 MAINTAINER Michael Richard <michael.richard@oriaks.com>
 
 ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update -qy && \
-    apt-get install -qy ca-certificates ldap-utils ldapvi schema2ldif slapd slapd-smbk5pwd ssl-cert vim-tiny && \
-    apt-get autoremove -qy --purge && \
+    apt-get install -qy \
+            ca-certificates \
+            ldap-utils \
+            ldapvi \
+            schema2ldif \
+            slapd \
+            slapd-smbk5pwd \
+            ssl-cert \
+            vim-tiny \
+            && \
+    apt-get autoremove -qy --purge \
+            && \
     apt-get clean -qy && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-    rm -rf /etc/ldap/slapd.d/* /var/lib/ldap/* && \
-    rm -f /etc/ssl/certs/ssl-cert-snakeoil.pem /etc/ssl/private/ssl-cert-snakeoil.key
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/* \
+           && \
+    rm -rf /etc/ldap/slapd.d/* \
+           /etc/ssl/certs/ssl-cert-snakeoil.pem \
+           /etc/ssl/private/ssl-cert-snakeoil.key \
+           /var/lib/ldap/*
 
 RUN usermod -aG ssl-cert openldap
 
