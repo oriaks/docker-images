@@ -1,0 +1,18 @@
+postgresql:
+  image: oriaks/postgresql:latest
+  environment:
+    PGSQL_DATABASE: phppgadmin
+    PGSQL_USER: phppgadmin
+    PGSQL_PASSWORD: phppgadmin
+  restart: unless-stopped
+  volumes:
+    - /var/lib/postgresql
+
+phppgadmin:
+  image: oriaks/phppgadmin:latest
+  links:
+    - postgresql:pgsql
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
