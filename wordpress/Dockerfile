@@ -19,13 +19,13 @@ ENV WORDPRESS_VERSION 4.6.1
 
 RUN apt-get update -qy && \
     apt-get install -qy \
+            bsdtar \
             ca-certificates \
             curl \
             && \
-    curl -fLsS -o /tmp/wordpress.tar.gz "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" && \
-    tar -xz -f /tmp/wordpress.tar.gz -C /var/www/html --strip-components 1 && \
-    rm -f /tmp/wordpress.tar.gz && \
+    curl -fLsS "https://wordpress.org/wordpress-${WORDPRESS_VERSION}.tar.gz" | bsdtar -xf- -C /var/www/html --strip-components 1 && \
     apt-get autoremove -qy --purge \
+            bsdtar \
             curl \
             && \
     apt-get clean -qy && \
