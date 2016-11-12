@@ -2,19 +2,33 @@ FROM debian:jessie
 MAINTAINER Michael Richard <michael.richard@oriaks.com>
 
 ENV DEBIAN_FRONTEND noninteractive
+
 RUN apt-get update -qy && \
-    apt-get install -qy curl && \
-    apt-get autoremove -qy --purge && \
+    apt-get install -qy \
+            curl \
+            && \
+    curl -fLsS 'https://repo.powerdns.com/FD380FBB-pub.asc' | apt-key add - && \
+    echo 'deb http://repo.powerdns.com/debian jessie-auth-40 main' > /etc/apt/sources.list.d/powerdns.list && \
+    apt-get autoremove -qy --purge \
+            curl \
+            && \
     apt-get clean -qy && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-RUN curl -Ls 'https://repo.powerdns.com/FD380FBB-pub.asc' | apt-key add - && \
-    echo 'deb http://repo.powerdns.com/debian jessie-auth-40 main' > /etc/apt/sources.list.d/powerdns.list
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/*
+
 RUN apt-get update -qy && \
-    apt-get install -qy pdns-backend-mysql pdns-server && \
-    apt-get install -qy --no-install-recommends mysql-client && \
-    apt-get autoremove -qy --purge && \
+    apt-get install -qy --no-install-recommends \
+            mysql-client \
+            pdns-backend-mysql \
+            pdns-server \
+            && \
+    apt-get autoremove -qy --purge \
+            && \
     apt-get clean -qy && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/*
 
 RUN cp /usr/share/pdns-backend-mysql/pdns.local.gmysql.conf /etc/powerdns/pdns.d/pdns.gmysql.conf
 
