@@ -34,7 +34,9 @@ RUN for file in /etc/apache2/mods-enabled/*.conf; do \
       ln -sf `echo $file | sed 's|mods-enabled|mods-available|;'` $file; \
     done
 
-RUN a2enmod remoteip && \
+RUN a2enmod expires && \
+    a2enmod remoteip && \
+    a2enmod rewrite && \
     a2enmod ssl && \
     a2ensite default-ssl
 
