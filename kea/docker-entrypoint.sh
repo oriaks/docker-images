@@ -18,16 +18,27 @@ elif [ "${1}" = "${PROCNAME}" ]; then
 fi
 
 if [ "$1" = "${DAEMON}" ]; then
+  export DB_HOST="${DB_HOST:=mysql}"
+  export DB_NAME="${DB_NAME:=${MYSQL_ENV_MYSQL_DATABASE}}"
+  export DB_PASSWORD="${DB_PASSWORD:=${MYSQL_ENV_MYSQL_PASSWORD}}"
+  export DB_USER="${DB_USER:=${MYSQL_ENV_MYSQL_USER}}"
+
   sed -i -f- /etc/kea/kea-dhcp4.conf <<- EOF
 	/lease-database/,/}/ {
-		s|"user": [^,]*|"user": "${MYSQL_ENV_MYSQL_USER}"|;
-		s|"password": [^,]*|"password": "${MYSQL_ENV_MYSQL_PASSWORD}"|;
-		s|"name": [^,]*|"name": "${MYSQL_ENV_MYSQL_DATABASE}"|;
+		s|"host": [^,]*|"host": "${DB_HOST}"|;
+		s|"user": [^,]*|"user": "${DB_USER}"|;
+		s|"password": [^,]*|"password": "${DB_PASSWORD}"|;
+		s|"name": [^,]*|"name": "${DB_NAME}"|;
 	}
 EOF
 
-  mysql -h 'mysql' -u "${MYSQL_ENV_MYSQL_USER}" "-p${MYSQL_ENV_MYSQL_PASSWORD}" "${MYSQL_ENV_MYSQL_DATABASE}" < /usr/share/kea-admin/scripts/mysql/dhcpdb_create.mysql
+  while [ -z `mysql -h "${DB_HOST}" -u "${DB_USER}" "-p${DB_PASSWORD}" -e "SELECT schema_name FROM information_schema.schemata WHERE schema_name='${DB_NAME}';" -Bs 2>/dev/null || true` ]; do
+    sleep 1
+  done
 
+  if [ `mysql -h "${DB_HOST}" -u "${DB_USER}" "-p${DB_PASSWORD}" -e "SELECT COUNT(DISTINCT table_name) FROM information_schema.columns WHERE table_schema='${DB_NAME}';" -Bs` -eq 0 ]; then
+    mysql -h "${DB_HOST}" -u "${DB_USER}" "-p${DB_PASSWORD}" "${DB_NAME}" < /usr/share/kea-admin/scripts/mysql/dhcpdb_create.mysql
+  fi
 fi
 
 exec "$@"
