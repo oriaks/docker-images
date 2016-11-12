@@ -1,0 +1,18 @@
+mariadb:
+  image: oriaks/mariadb:latest
+  environment:
+    MYSQL_DATABASE: mautic
+    MYSQL_USER: mautic
+    MYSQL_PASSWORD: mautic
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mysql
+
+mautic:
+  image: oriaks/mautic:latest
+  links:
+    - mariadb:mysql
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
