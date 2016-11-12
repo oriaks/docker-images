@@ -297,7 +297,7 @@ $servers->setValue('server','name','My LDAP Server');
 
 /* Array of base DNs of your LDAP server. Leave this blank to have phpLDAPadmin
    auto-detect it for you. */
-   $servers->setValue('server','base',array(sprintf('dc=%s',str_replace('.',',dc=',getenv('LDAP_ENV_LDAP_DOMAIN')))));
+   $servers->setValue('server','base',array(getenv('LDAP_BASE_DN')));
 
 /* Five options for auth_type:
    1. 'cookie': you will login via a web form, and a client-side cookie will
@@ -324,12 +324,12 @@ $servers->setValue('server','name','My LDAP Server');
    the directory for users (ie, if your LDAP server does not allow anonymous
    binds. */
 // $servers->setValue('login','bind_id','');
-   $servers->setValue('login','bind_id',sprintf('cn=admin,dc=%s',str_replace('.',',dc=',getenv('LDAP_ENV_LDAP_DOMAIN'))));
+   $servers->setValue('login','bind_id',getenv('LDAP_BIND_DN'));
 
 /* Your LDAP password. If you specified an empty bind_id above, this MUST also
    be blank. */
 // $servers->setValue('login','bind_pass','');
-   $servers->setValue('login','bind_pass',getenv('LDAP_ENV_LDAP_PASSWORD'));
+   $servers->setValue('login','bind_pass',getenv('LDAP_BIND_PASSWORD'));
 
 /* Use TLS (Transport Layer Security) to connect to the LDAP server. */
    $servers->setValue('server','tls',true);
