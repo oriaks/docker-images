@@ -19,6 +19,10 @@ elif [ "${1}" = "${PROCNAME}" ]; then
 fi
 
 if [ "$1" = "${DAEMON}" ]; then
+  export PGSQL_DATABASE="${PGSQL_DATABASE:=}"
+  export PGSQL_PASSWORD="${PGSQL_PASSWORD:=}"
+  export PGSQL_USER="${PGSQL_USER:=}"
+
   chown postgres:postgres /var/lib/postgresql
 
   if [ ! -d "/var/lib/postgresql/${PGSQL_VERSION}/main" ]; then

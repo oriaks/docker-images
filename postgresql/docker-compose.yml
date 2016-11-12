@@ -1,0 +1,11 @@
+postgresql:
+  image: oriaks/postgresql:latest
+  environment:
+    PGSQL_DATABASE: test
+    PGSQL_USER: test
+    PGSQL_PASSWORD: test
+  ports:
+    - 0.0.0.0:5432:5432/tcp
+  restart: unless-stopped
+  volumes:
+    - /var/lib/postgresql
