@@ -1,0 +1,18 @@
+mariadb:
+  image: oriaks/mariadb:latest
+  environment:
+    MYSQL_DATABASE: limesurvey
+    MYSQL_USER: limesurvey
+    MYSQL_PASSWORD: limesurvey
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mysql
+
+limesurvey:
+  image: oriaks/limesurvey:latest
+  links:
+    - mariadb:mysql
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
