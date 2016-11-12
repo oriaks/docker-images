@@ -1,0 +1,30 @@
+mariadb:
+  image: oriaks/mariadb:latest
+  environment:
+    MYSQL_DATABASE: powerdns
+    MYSQL_USER: powerdns
+    MYSQL_PASSWORD: powerdns
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mysql
+
+powerdns:
+  image: oriaks/powerdns:latest
+  environment:
+    PDNS_API_KEY: apikey
+  links:
+    - mariadb:mysql
+  ports:
+    - 0.0.0.0:8053:53/tcp
+    - 0.0.0.0:8053:53/udp
+  restart: unless-stopped
+
+powerdns-admin:
+  image: oriaks/powerdns-admin:latest
+  links:
+    - mariadb:mysql
+    - powerdns:pdns
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
