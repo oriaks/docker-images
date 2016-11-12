@@ -3,10 +3,17 @@ MAINTAINER Michael Richard <michael.richard@oriaks.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -qy && \
-    apt-get install -qy jetty8 ssl-cert && \
-    apt-get autoremove -qy --purge && \
+    apt-get install -qy \
+            jetty8 \
+            ssl-cert \
+            && \
+    apt-get autoremove -qy --purge \
+            && \
     apt-get clean -qy && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/* \
+           && \
     rm -rf /var/lib/jetty8/webapps/root/*
 
 RUN mkdir -p /var/cache/jetty8/data && \
