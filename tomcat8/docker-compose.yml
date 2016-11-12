@@ -1,0 +1,8 @@
+tomcat8:
+  image: oriaks/tomcat:8
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
+  volumes:
+    - /var/lib/tomcat8/webapps
