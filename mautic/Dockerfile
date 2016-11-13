@@ -48,7 +48,7 @@ RUN apt-get update -qy && \
             && \
     curl -fLsS "https://github.com/mautic/mautic/archive/${MAUTIC_VERSION}.zip" | bsdtar -xf- --strip-components 1 -C /var/www/html && \
     mkdir -p /var/www/html/.git/hooks && \
-    php /usr/local/bin/composer install --no-ansi --no-interaction --working-dir /var/www/html && \
+    composer install --no-ansi --no-dev --no-interaction --optimize-autoloader --prefer-dist --working-dir /var/www/html && \
     apt-get autoremove -qy --purge \
             bsdtar \
             git \
