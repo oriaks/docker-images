@@ -1,0 +1,11 @@
+ttyjs:
+  image: oriaks/ttyjs:latest
+  environment:
+    TTY_USER: test
+    TTY_PASSWORD: test
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
+  volumes:
+    - /home
