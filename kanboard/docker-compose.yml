@@ -1,0 +1,21 @@
+mariadb:
+  image: oriaks/mariadb:latest
+  environment:
+    MYSQL_DATABASE: kanboard
+    MYSQL_USER: kanboard
+    MYSQL_PASSWORD: kanboard
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mysql
+
+kanboard:
+  image: oriaks/kanboard:latest
+  links:
+    - mariadb:mysql
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
+  volumes:
+    - /var/www/html/data
+    - /var/www/html/plugins
