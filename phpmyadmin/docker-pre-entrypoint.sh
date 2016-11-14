@@ -1,9 +1,14 @@
 #!/bin/bash
 
+export DB_HOST="${DB_HOST:=mysql}"
+export DB_NAME="${DB_NAME:=${MYSQL_ENV_MYSQL_DATABASE}}"
+export DB_PASSWORD="${DB_PASSWORD:=${MYSQL_ENV_MYSQL_PASSWORD}}"
+export DB_USER="${DB_USER:=${MYSQL_ENV_MYSQL_USER}}"
+
 set -- "/docker-entrypoint.sh" "$@"
 
-if [ ! -f /opt/phpmyadmin/config.secret.inc.php ]; then
-  cat > /opt/phpmyadmin/config.secret.inc.php <<- EOF
+if [ ! -f /var/www/html/config.secret.inc.php ]; then
+  cat > /var/www/html/config.secret.inc.php <<- EOF
 	<?php
 	/**
 	 * This is needed for cookie based authentication to encrypt password in

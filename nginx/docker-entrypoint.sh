@@ -21,12 +21,6 @@ if [ "$1" = "${DAEMON}" ]; then
   if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem -o ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]; then
     dpkg-reconfigure ssl-cert
   fi
-
-  if [ ! `find /var/www/html -type f | wc -l` -gt 0 ]; then
-    chown --reference /usr/share/nginx/html /var/www/html
-    chmod --reference /usr/share/nginx/html /var/www/html
-    cp -Rp /usr/share/nginx/html/* /var/www/html/
-  fi
 fi
 
 exec "$@"

@@ -1,0 +1,8 @@
+tomcat7:
+  image: oriaks/tomcat:7
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
+  volumes:
+    - /var/lib/tomcat7/webapps

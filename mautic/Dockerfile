@@ -1,36 +1,76 @@
 FROM oriaks/php:latest
 MAINTAINER Michael Richard <michael.richard@oriaks.com>
 
+ENV DEBIAN_FRONTEND noninteractive
+
+RUN apt-get update -qy && \
+    apt-get install -qy \
+            php5-imap \
+            php5-intl \
+            php5-mcrypt \
+            php5-mysql \
+            php5-curl \
+            && \
+    apt-get autoremove -qy --purge \
+            && \
+    apt-get clean -qy && \
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/*
+
 ENV COMPOSER_VERSION 1.2.1
+
+RUN apt-get update -qy && \
+    apt-get install -qy \
+            bsdtar \
+            ca-certificates \
+            curl \
+            && \
+    curl -fLsS -o /usr/local/bin/composer "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" && \
+    chown root:root /usr/local/bin/composer && \
+    chmod u=rwx,g=rx,o=rx /usr/local/bin/composer && \
+    apt-get autoremove -qy --purge \
+            bsdtar \
+            && \
+    apt-get clean -qy && \
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/*
+
 ENV MAUTIC_VERSION 2.2.1
 
-ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -qy && \
-    apt-get install -qy bsdtar ca-certificates curl git && \
-    apt-get install -qy php5-imap php5-intl php5-mcrypt php5-mysql && \
-    apt-get autoremove -qy --purge && \
+    apt-get install -qy \
+            bsdtar \
+            ca-certificates \
+            curl \
+            git \
+            && \
+    curl -fLsS "https://github.com/mautic/mautic/archive/${MAUTIC_VERSION}.zip" | bsdtar -xf- --strip-components 1 -C /var/www/html && \
+    mkdir -p /var/www/html/.git/hooks && \
+    composer install --no-ansi --no-dev --no-interaction --optimize-autoloader --prefer-dist --working-dir /var/www/html && \
+    apt-get autoremove -qy --purge \
+            bsdtar \
+            git \
+            && \
     apt-get clean -qy && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
-RUN mkdir -p /opt/composer && \
-    curl -Ls -o /opt/composer/composer.phar "https://getcomposer.org/download/${COMPOSER_VERSION}/composer.phar" && \
-    chown -R root:root /opt/composer && \
-    chmod -R u=rwX,g=rX,o=rX /opt/composer
-
-RUN mkdir -p /opt/mautic && \
-    curl -Ls "https://github.com/mautic/mautic/archive/${MAUTIC_VERSION}.zip" | bsdtar -xf- --strip-components 1 -C /opt/mautic && \
-    mkdir -p /opt/mautic/.git/hooks && \
-    php /opt/composer/composer.phar install --no-ansi --no-interaction --working-dir /opt/mautic && \
-    chown -R root:root /opt/mautic && \
-    chmod -R u=rwX,g=rX,o=rX /opt/mautic && \
-    chown -R www-data:www-data /opt/mautic/app/cache && \
-    chown -R www-data:www-data /opt/mautic/app/logs && \
-    chown -R www-data:www-data /opt/mautic/media/files
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/*
 
 COPY apache2.conf /etc/apache2/vhost.d/default.conf
-COPY local.php /opt/mautic/app/config/local.php
+COPY local.php /var/www/html/app/config/local.php
 
-RUN chown www-data:www-data /opt/mautic/app/config/local.php
+RUN chown -R root:root /var/www/html && \
+    chmod -R u=rwX,g=rX,o=rX /var/www/html && \
+    chown -R www-data:www-data /var/www/html/app/cache && \
+    chown -R www-data:www-data /var/www/html/app/config/local.php && \
+    chown -R www-data:www-data /var/www/html/app/logs && \
+    chown -R www-data:www-data /var/www/html/media/files
 
-VOLUME /opt/mautic/media/files
-WORKDIR /opt/mautic
+COPY docker-pre-entrypoint.sh /docker-pre-entrypoint.sh
+RUN chmod +x /docker-pre-entrypoint.sh
+
+VOLUME /var/www/media/files
+
+ENTRYPOINT [ "/docker-pre-entrypoint.sh" ]

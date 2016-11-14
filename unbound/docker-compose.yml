@@ -1,0 +1,6 @@
+unbound:
+  image: oriaks/unbound:latest
+  ports:
+    - 0.0.0.0:8053:53/tcp
+    - 0.0.0.0:8053:53/udp
+  restart: unless-stopped

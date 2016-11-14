@@ -1,0 +1,11 @@
+openssh:
+  image: oriaks/openssh:latest
+  environment:
+    SSH_USER: test
+    SSH_PASSWORD: test
+  ports:
+    - 0.0.0.0:8022:22/tcp
+  restart: unless-stopped
+  volumes:
+    - /home
+    - /var/lib/ssh

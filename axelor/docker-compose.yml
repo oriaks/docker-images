@@ -1,0 +1,21 @@
+postgresql:
+  image: oriaks/postgresql:latest
+  environment:
+    PGSQL_DATABASE: axelor
+    PGSQL_USER: axelor
+    PGSQL_PASSWORD: axelor
+  restart: unless-stopped
+  volumes:
+    - /var/lib/postgresql
+
+axelor:
+  image: oriaks/axelor:latest
+  expose:
+    - 80/tcp
+    - 443/tcp
+  links:
+    - postgresql:pgsql
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped

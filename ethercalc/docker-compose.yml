@@ -1,0 +1,6 @@
+ethercalc:
+  image: oriaks/ethercalc:latest
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped

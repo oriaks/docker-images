@@ -1,0 +1,19 @@
+openldap:
+  image: oriaks/openldap:latest
+  environment:
+    LDAP_DOMAIN: test
+    LDAP_ORGANIZATION: Test
+    LDAP_PASSWORD: test
+  restart: unless-stopped
+  volumes:
+    - /etc/ldap/slapd.d
+    - /var/lib/ldap
+
+phpldapadmin:
+  image: oriaks/phpldapadmin:latest
+  links:
+    - openldap:ldap
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped

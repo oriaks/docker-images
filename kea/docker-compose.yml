@@ -1,0 +1,17 @@
+mariadb:
+  image: oriaks/mariadb:latest
+  environment:
+    MYSQL_DATABASE: kea
+    MYSQL_USER: kea
+    MYSQL_PASSWORD: kea
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mysql
+
+kea:
+  image: oriaks/kea:latest
+  links:
+    - mariadb:mysql
+  ports:
+    - 0.0.0.0:8067:67/udp
+  restart: unless-stopped

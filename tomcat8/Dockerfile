@@ -3,10 +3,17 @@ MAINTAINER Michael Richard <michael.richard@oriaks.com>
 
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -qy && \
-    apt-get install -qy tomcat8 ssl-cert && \
-    apt-get autoremove -qy --purge && \
+    apt-get install -qy \
+            tomcat8 \
+            ssl-cert \
+            && \
+    apt-get autoremove -qy --purge \
+            && \
     apt-get clean -qy && \
-    rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/* \
+           && \
     rm -rf /var/lib/tomcat8/webapps/ROOT/*
 
 RUN sed -i 's|8080|80|g;' /etc/tomcat8/server.xml

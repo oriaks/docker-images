@@ -20,6 +20,10 @@ elif [ "${1}" = "${PROCNAME}" ]; then
 fi
 
 if [ "$1" = "${DAEMON}" ]; then
+  export LDAP_ORGANIZATION="${LDAP_ORGANIZATION:=}"
+  export LDAP_DOMAIN="${LDAP_DOMAIN:=}"
+  export LDAP_PASSWORD="${LDAP_PASSWORD:=}"
+
   if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem -o ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]; then
     dpkg-reconfigure ssl-cert
   fi

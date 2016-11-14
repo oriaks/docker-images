@@ -22,10 +22,10 @@ UPLOAD_DIR = os.path.join(basedir, 'upload')
 
 # DATABASE CONFIG
 #You'll need MySQL-python
-SQLA_DB_USER = os.getenv('MYSQL_ENV_MYSQL_USER')
-SQLA_DB_PASSWORD = os.getenv('MYSQL_ENV_MYSQL_PASSWORD')
-SQLA_DB_HOST = 'mysql'
-SQLA_DB_NAME = os.getenv('MYSQL_ENV_MYSQL_DATABASE')
+SQLA_DB_USER = os.getenv('DB_USER')
+SQLA_DB_PASSWORD = os.getenv('DB_PASSWORD')
+SQLA_DB_HOST = os.getenv('DB_HOST')
+SQLA_DB_NAME = os.getenv('DB_NAME')
 
 #MySQL
 SQLALCHEMY_DATABASE_URI = 'mysql://'+SQLA_DB_USER+':'\
@@ -36,15 +36,14 @@ SQLALCHEMY_MIGRATE_REPO = os.path.join(basedir, 'db_repository')
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 
 # LDAP/AD
-LDAP_DOMAIN = os.getenv('LDAP_ENV_LDAP_DOMAIN')
-#LDAP_BASEDN = 'dc='+LDAP_DOMAIN.replace('.', 'dc=')
-LDAP_BASEDN = 'dc=example'
+LDAP_DOMAIN = os.getenv('LDAP_DOMAIN')
+LDAP_BASEDN = os.getenv('LDAP_BASE_DN')
 
 # LDAP CONFIG
 LDAP_TYPE = 'ldap'
-LDAP_URI = 'ldaps://ldap:636'
-LDAP_USERNAME = 'cn=admin,'+LDAP_BASEDN
-LDAP_PASSWORD = os.getenv('LDAP_ENV_LDAP_PASSWORD')
+LDAP_URI = 'ldaps://'+os.getenv('LDAP_HOST')+':636'
+LDAP_USERNAME = os.getenv('LDAP_USER')
+LDAP_PASSWORD = os.getenv('LDAP_PASSWORD')
 LDAP_SEARCH_BASE = LDAP_BASEDN
 # Additional options only if LDAP_TYPE=ldap
 LDAP_USERNAMEFIELD = 'uid'
@@ -75,8 +74,8 @@ BASIC_ENABLED = True
 SIGNUP_ENABLED = True
 
 # POWERDNS CONFIG
-PDNS_STATS_URL = 'http://pdns:8081/'
-PDNS_API_KEY = os.getenv('PDNS_ENV_PDNS_API_KEY')
+PDNS_STATS_URL = 'http://'+os.getenv('PDNS_HOST')+':8081/'
+PDNS_API_KEY = os.getenv('PDNS_API_KEY')
 PDNS_VERSION = '4.0.1'
 
 # RECORDS ALLOWED TO EDIT

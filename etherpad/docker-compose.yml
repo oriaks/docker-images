@@ -1,0 +1,18 @@
+mariadb:
+  image: oriaks/mariadb:latest
+  environment:
+    MYSQL_DATABASE: etherpad
+    MYSQL_USER: etherpad
+    MYSQL_PASSWORD: etherpad
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mysql
+
+etherpad:
+  image: oriaks/etherpad:latest
+  links:
+    - mariadb:mysql
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
