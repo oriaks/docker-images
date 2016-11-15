@@ -9,12 +9,8 @@ RUN apt-get update -qy && \
     apt-get install -qy \
     bsdtar \
     curl \
-    ca-certificates \
     gcc \
     make \
-    openssh-server \
-    sed \
-    ssl-cert \
     tcl
     
 # cleanup
