@@ -13,20 +13,20 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 0C49F3730359A14
     openssl \
     mongodb-org
 
-#COPY mongo.conf /etc/mongod.conf
+COPY mongod.conf /etc/mongod.conf
 
 # cleanup
 RUN apt-get autoremove -qy --purge && \
     apt-get clean -qy && \
     rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-RUN mkdir -p /var/lib/mongodb && mkdir -p /var/log/mongodb
+RUN mkdir -p /opt/mongodb/lib && mkdir /opt/mongodb/log
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
-VOLUME /var/lib/mongodb
-VOLUME /var/log/mongodb
+VOLUME /opt/mongo/lib
+VOLUME /opt/mongo/log
 
 # exposed port
 EXPOSE 27017
