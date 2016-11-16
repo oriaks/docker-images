@@ -1,0 +1,8 @@
+version: '2'
+
+services:
+   db:
+     image: oriaks/mongodb:latest
+     restart: always
+     ports:
+       - "27017:27017"
