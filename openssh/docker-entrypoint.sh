@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 PROCNAME='sshd'
 DAEMON='/usr/sbin/sshd'
