@@ -7,8 +7,10 @@ RUN apt-get update -qy && \
     apt-get install -qy \
             apache2 \
             ca-certificates \
+            openssh-sftp-server \
             ssl-cert \
             ssmtp \
+            sudo \
             && \
     apt-get autoremove -qy --purge \
             && \
