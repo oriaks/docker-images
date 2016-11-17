@@ -1,0 +1,6 @@
+docker:
+  image: oriaks/docker:latest
+  restart: unless-stopped
+  tty: true
+  volumes:
+    - /run/docker.sock:/run/docker.sock:ro
