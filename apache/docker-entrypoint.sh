@@ -18,26 +18,26 @@ elif [ "${1}" = "${PROCNAME}" ]; then
 fi
 
 if [ "$1" = "${DAEMON}" ]; then
-  export SMTP_FROM="${SMTP_FROM:=}"
-  export SMTP_HOST="${SMTP_HOST:=smtp}"
-  export SMTP_PASSWORD="${SMTP_PASSWORD:=}"
-  export SMTP_STARTTLS="${SMTP_STARTTLS:=NO}"
-  export SMTP_TLS="${SMTP_TLS:=NO}"
-  export SMTP_USER="${SMTP_USER:=}"
+  export MAIL_FROM="${MAIL_FROM:=}"
+  export MAIL_HOST="${MAIL_HOST:=smtp}"
+  export MAIL_PASSWORD="${MAIL_PASSWORD:=}"
+  export MAIL_STARTTLS="${MAIL_STARTTLS:=NO}"
+  export MAIL_TLS="${MAIL_TLS:=NO}"
+  export MAIL_USER="${MAIL_USER:=}"
   export VIRTUAL_HOST="${VIRTUAL_HOST:=}"
 
-  if [ -z "${SMTP_PORT}" ]; then
-    if [ "${SMTP_STARTTLS}" = "YES" ]; then
-      export SMTP_PORT='587'
-    elif [ "${SMTP_TLS}" = "YES" ]; then
-      export SMTP_PORT='465'
+  if [ -z "${MAIL_PORT}" ]; then
+    if [ "${MAIL_STARTTLS}" = "YES" ]; then
+      export MAIL_PORT='587'
+    elif [ "${MAIL_TLS}" = "YES" ]; then
+      export MAIL_PORT='465'
     else
-      export SMTP_PORT='25'
+      export MAIL_PORT='25'
     fi
   fi
 
-  if [ "${SMTP_STARTTLS}" = "YES" ]; then
-    export SMTP_TLS='YES'
+  if [ "${MAIL_STARTTLS}" = "YES" ]; then
+    export MAIL_TLS='YES'
   fi
 
   if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem -o ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]; then
@@ -47,12 +47,12 @@ if [ "$1" = "${DAEMON}" ]; then
   SSMTP=()
   REVALIASES=()
 
-  [ -n "${SMTP_FROM}"     ] && REVALIASES+=( "root:${SMTP_FROM}" "www-data:${SMTP_FROM}" )
-  [ -n "${SMTP_HOST}"     ] && SSMTP+=( "mailhub=${SMTP_HOST}:${SMTP_PORT}" )
-  [ -n "${SMTP_PASSWORD}" ] && SSMTP+=( "AuthPass=${SMTP_PASSWORD}" )
-  [ -n "${SMTP_STARTTLS}" ] && SSMTP+=( "UseSTARTTLS=${SMTP_STARTTLS}" )
-  [ -n "${SMTP_TLS}"      ] && SSMTP+=( "UseTLS=${SMTP_TLS}" )
-  [ -n "${SMTP_USER}"     ] && SSMTP+=( "AuthUser=${SMTP_USER}" )
+  [ -n "${MAIL_FROM}"     ] && REVALIASES+=( "root:${MAIL_FROM}" "www-data:${MAIL_FROM}" )
+  [ -n "${MAIL_HOST}"     ] && SSMTP+=( "mailhub=${MAIL_HOST}:${MAIL_PORT}" )
+  [ -n "${MAIL_PASSWORD}" ] && SSMTP+=( "AuthPass=${MAIL_PASSWORD}" )
+  [ -n "${MAIL_STARTTLS}" ] && SSMTP+=( "UseSTARTTLS=${MAIL_STARTTLS}" )
+  [ -n "${MAIL_TLS}"      ] && SSMTP+=( "UseTLS=${MAIL_TLS}" )
+  [ -n "${MAIL_USER}"     ] && SSMTP+=( "AuthUser=${MAIL_USER}" )
   [ -n "${VIRTUAL_HOST}"  ] && SSMTP+=( "hostname=${VIRTUAL_HOST}" )
 
   printf "%s\n" "${REVALIASES[@]}" > /etc/ssmtp/revaliases
