@@ -2,7 +2,7 @@
 
 PROCNAME='sshd'
 DAEMON='/usr/sbin/sshd'
-DAEMON_ARGS=( -d )
+DAEMON_ARGS=( -D )
 
 if [ -z "$1" ]; then
   set -- "${DAEMON}" "${DAEMON_ARGS[@]}"
