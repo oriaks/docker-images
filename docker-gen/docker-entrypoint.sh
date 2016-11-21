@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 PROCNAME='docker-gen'
 DAEMON='/usr/local/bin/docker-gen'
