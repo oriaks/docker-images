@@ -53,7 +53,7 @@ if [ "$1" = "${DAEMON}" ]; then
   [ -n "${MAIL_STARTTLS}" ] && SSMTP+=( "UseSTARTTLS=${MAIL_STARTTLS}" )
   [ -n "${MAIL_TLS}"      ] && SSMTP+=( "UseTLS=${MAIL_TLS}" )
   [ -n "${MAIL_USER}"     ] && SSMTP+=( "AuthUser=${MAIL_USER}" )
-  [ -n "${VIRTUAL_HOST}"  ] && SSMTP+=( "hostname=${VIRTUAL_HOST}" )
+  [ -n "${VIRTUAL_HOST}"  ] && SSMTP+=( "hostname=${VIRTUAL_HOST%%,*}" )
 
   printf "%s\n" "${REVALIASES[@]}" > /etc/ssmtp/revaliases
   printf "%s\n" "${SSMTP[@]}" > /etc/ssmtp/ssmtp.conf
