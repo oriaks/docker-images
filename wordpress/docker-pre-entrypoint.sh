@@ -17,4 +17,6 @@ export WP_SECURE_AUTH_SALT="${WP_SECURE_AUTH_SALT:=`head -c1M /dev/urandom | sha
 
 set -- "/docker-entrypoint.sh" "$@"
 
+chown -R www-data:www-data /var/www/html/wp-content
+
 exec "$@"

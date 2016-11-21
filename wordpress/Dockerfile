@@ -41,4 +41,6 @@ RUN chown -R root:root /var/www/html
 COPY docker-pre-entrypoint.sh /docker-pre-entrypoint.sh
 RUN chmod +x /docker-pre-entrypoint.sh
 
+VOLUME /var/www/html/wp-content
+
 ENTRYPOINT [ "/docker-pre-entrypoint.sh" ]
