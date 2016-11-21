@@ -1,5 +1,5 @@
 NAME = oriaks/docker-gen
-VERSION = 0.4
+VERSION = 0.7
 
 .PHONY: all build tag_latest
 
