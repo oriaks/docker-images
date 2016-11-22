@@ -11,8 +11,8 @@ postgresql:
 axelor:
   image: oriaks/axelor:latest
   environment:
-    AXELOR_DEMO: 'true'
-    AXELOR_LANG: fr
+    AXELOR_DEMO: 'false'
+    AXELOR_LANG: en
   expose:
     - 80/tcp
     - 443/tcp
