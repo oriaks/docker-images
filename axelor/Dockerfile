@@ -1,8 +1,6 @@
 FROM oriaks/tomcat:7
 MAINTAINER Michael Richard <michael.richard@oriaks.com>
 
-ENV AXELOR_VERSION 4.0.0-RC4
-
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -qy && \
     apt-get install -qy \
@@ -10,7 +8,7 @@ RUN apt-get update -qy && \
             ca-certificates \
             curl \
             && \
-    curl -fLsS "http://download.axelor.com/abs/abs-${AXELOR_VERSION}-en.war" | bsdtar -xf- -C /var/lib/tomcat7/webapps/ROOT/ && \
+    curl -fLsS "http://download.axelor.com/abs/autoInstallerFR/axelor-business-suite-4.x.x-linux-fr-x64.run" | sed -e '1,/^exit 0$/d' | bsdtar -xf- -C /var/lib/tomcat7/webapps/ROOT/ --strip-components 4 ./var/www/axelor && \
     chown -R tomcat7:tomcat7 /var/lib/tomcat7/webapps/ROOT && \
     apt-get autoremove -qy --purge \
             bsdtar \
@@ -20,6 +18,8 @@ RUN apt-get update -qy && \
     rm -rf /tmp/* \
            /var/lib/apt/lists/* \
            /var/tmp/*
+
+COPY application.properties /var/lib/tomcat7/webapps/ROOT/WEB-INF/classes/application.properties
 
 COPY docker-pre-entrypoint.sh /docker-pre-entrypoint.sh
 RUN chmod +x /docker-pre-entrypoint.sh
