@@ -53,7 +53,8 @@ RUN apt-get update -qy && \
             curl \
             && \
     mkdir -p /var/lib/tomcat8/webapps/ROOT && \
-    curl -fLsS "https://github.com/razuna/razuna/archive/Razuna-${RAZUNA_VERSION}.tar.gz" | bsdtar -xf- --strip-components 1 -C /var/lib/tomcat8/webapps/ROOT/ && \
+#    curl -fLsS "https://github.com/razuna/razuna/archive/Razuna-${RAZUNA_VERSION}.tar.gz" | bsdtar -xf- --strip-components 1 -C /var/lib/tomcat8/webapps/ROOT/ && \
+    curl -fLsS "https://github.com/oriaks/razuna/archive/master.tar.gz" | bsdtar -xf- --strip-components 1 -C /var/lib/tomcat8/webapps/ROOT/ && \
     apt-get autoremove -qy --purge \
             bsdtar \
             curl \
