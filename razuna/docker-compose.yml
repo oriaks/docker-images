@@ -1,9 +1,9 @@
 mariadb:
   image: oriaks/mariadb:latest
   environment:
-    MYSQL_DATABASE: razuna123
-    MYSQL_USER: razuna456
-    MYSQL_PASSWORD: razuna789
+    MYSQL_DATABASE: razuna
+    MYSQL_USER: razuna
+    MYSQL_PASSWORD: razuna
   restart: unless-stopped
   volumes:
     - /var/lib/mysql
