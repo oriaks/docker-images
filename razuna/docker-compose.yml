@@ -1,0 +1,17 @@
+mariadb:
+  image: oriaks/mariadb:latest
+  environment:
+    MYSQL_DATABASE: razuna123
+    MYSQL_USER: razuna456
+    MYSQL_PASSWORD: razuna789
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mysql
+
+razuna:
+  image: oriaks/razuna:latest
+  links:
+    - mariadb:mysql
+  ports:
+    - 0.0.0.0:80:80/tcp
+  restart: unless-stopped
