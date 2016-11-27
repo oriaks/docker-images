@@ -20,6 +20,7 @@ RUN apt-get update -qy && \
            /var/tmp/*
 
 COPY application.properties /var/lib/tomcat7/webapps/ROOT/WEB-INF/classes/application.properties
+COPY module.properties /var/lib/tomcat7/webapps/ROOT/WEB-INF/classes/module.properties
 
 COPY docker-pre-entrypoint.sh /docker-pre-entrypoint.sh
 RUN chmod +x /docker-pre-entrypoint.sh
