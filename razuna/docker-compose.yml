@@ -15,3 +15,12 @@ razuna:
   ports:
     - 0.0.0.0:80:80/tcp
   restart: unless-stopped
+  volumes:
+    - /var/lib/tomcat8/webapps/ROOT/admin/backup
+    - /var/lib/tomcat8/webapps/ROOT/assets
+    - /var/lib/tomcat8/webapps/ROOT/db
+    - /var/lib/tomcat8/webapps/ROOT/raz1
+    - /var/lib/tomcat8/webapps/ROOT/raz2
+    - /var/lib/tomcat8/webapps/ROOT/WEB-INF/bluedragon
+    - /var/lib/tomcat8/webapps/razuna-searchserver/WEB-INF/bluedragon
+    - /var/lib/tomcat8/webapps/razuna-searchserver/WEB-INF/collections
