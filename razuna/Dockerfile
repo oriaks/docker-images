@@ -2,6 +2,7 @@ FROM debian:stretch
 MAINTAINER Michael Richard <michael.richard@oriaks.com>
 
 ENV DEBIAN_FRONTEND noninteractive
+ENV LANG C.UTF-8
 
 RUN echo 'deb http://httpredir.debian.org/debian stretch contrib' > /etc/apt/sources.list.d/contrib.list && \
     echo 'deb http://httpredir.debian.org/debian stretch non-free' > /etc/apt/sources.list.d/non-free.list
