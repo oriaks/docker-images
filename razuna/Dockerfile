@@ -93,7 +93,7 @@ COPY circuit.xml.cfm /var/lib/tomcat8/webapps/ROOT/admin/controller/circuit.xml.
 COPY dsp_firsttime.cfm /var/lib/tomcat8/webapps/ROOT/admin/views/dsp_firsttime.cfm
 COPY dsp_firsttime_account.cfm /var/lib/tomcat8/webapps/ROOT/admin/views/ajaxparts/dsp_firsttime_account.cfm
 RUN sed -i 's|localhost:80.0|localhost|g;' /var/lib/tomcat8/webapps/ROOT/global/cfc/*.cfc
-RUN echo '<cflocation url="raz1/index.cfm">' > /var/lib/tomcat8/webapps/ROOT/index.cfm
+RUN echo '<cflocation url="raz1/dam/index.cfm">' > /var/lib/tomcat8/webapps/ROOT/index.cfm
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
