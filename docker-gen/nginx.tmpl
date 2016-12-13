@@ -61,7 +61,7 @@
 {{ end }}
 
   # Diffie-Hellman parameter for DHE ciphersuites, recommended 2048 bits
-  #ssl_dhparam /etc/nginx/cert.d/dhparam.pem;
+  #ssl_dhparam /etc/nginx/certs/dhparam.pem;
 
   ssl_session_timeout 1d;
   ssl_session_cache shared:SSL:50m;
@@ -78,7 +78,7 @@
   ssl_stapling_verify on;
 
   ## verify chain of trust of OCSP response using Root CA and Intermediate certs
-  #ssl_trusted_certificate /etc/nginx/cert.d/ca-certs.pem
+  #ssl_trusted_certificate /etc/nginx/certs/ca-certs.pem
 
   resolver 8.8.8.8 8.8.4.4;
 
@@ -129,15 +129,15 @@ upstream {{ $host }} {
 
 {{/* Get the first cert name defined by containers w/ the same vhost */}}
 {{ $certName := (first (groupByKeys $containers "Env.CERT_NAME")) }}
-{{ $certName := when (and (exists (printf "/etc/nginx/cert.d/%s.pem" $certName)) (exists (printf "/etc/nginx/cert.d/%s.pem" $certName))) (printf "/etc/nginx/cert.d/%s" $certName) nil }}
+{{ $certName := when (and (exists (printf "/etc/nginx/certs/%s.pem" $certName)) (exists (printf "/etc/nginx/certs/%s.pem" $certName))) (printf "/etc/nginx/certs/%s" $certName) nil }}
 
 {{/* Get the best matching cert by name for the vhost. */}}
-{{ $vhostCert := (closest (dir "/etc/nginx/cert.d") (printf "%s.pem" $host))}}
+{{ $vhostCert := (closest (dir "/etc/nginx/certs") (printf "%s.pem" $host))}}
 
 {{/* vhostCert is actually a filename so remove any suffixes since they are added later */}}
 {{ $vhostCert := replace $vhostCert ".pem" "" -1 }}
 {{ $vhostCert := replace $vhostCert ".key" "" -1 }}
-{{ $vhostCert := when (eq $vhostCert "") nil (printf "/etc/nginx/cert.d/%s" $vhostCert) }}
+{{ $vhostCert := when (eq $vhostCert "") nil (printf "/etc/nginx/certs/%s" $vhostCert) }}
 
 {{/* Use the cert specifid on the container or fallback to the best vhost match */}}
 {{ $cert := coalesce $certName $vhostCert "default" }}
@@ -161,14 +161,14 @@ upstream {{ $host }} {
 
     # certs sent to the client in SERVER HELLO are concatenated in ssl_certificate
     {{ if ne $cert "default" }}
-    ssl_certificate {{ (printf "/etc/nginx/cert.d/%s.pem" $cert) }};
-    ssl_certificate_key {{ (printf "/etc/nginx/cert.d/%s.key" $cert) }};
+    ssl_certificate {{ (printf "/etc/nginx/certs/%s.pem" $cert) }};
+    ssl_certificate_key {{ (printf "/etc/nginx/certs/%s.key" $cert) }};
     {{ else }}
     ssl_certificate /etc/ssl/certs/ssl-cert-snakeoil.pem;
     ssl_certificate_key /etc/ssl/private/ssl-cert-snakeoil.key;
     {{ end }}
-    {{ if (exists (printf "/etc/nginx/cert.d/%s.dhparam.pem" $cert)) }}
-    ssl_dhparam {{ printf "/etc/nginx/cert.d/%s.dhparam.pem" $cert }};
+    {{ if (exists (printf "/etc/nginx/certs/%s.dhparam.pem" $cert)) }}
+    ssl_dhparam {{ printf "/etc/nginx/certs/%s.dhparam.pem" $cert }};
     {{ end }}
   {{ end }}
 
