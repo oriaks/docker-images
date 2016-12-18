@@ -1,0 +1,3 @@
+stunnel:
+  image: oriaks/stunnel:latest
+  restart: unless-stopped
