@@ -20,8 +20,9 @@ RUN apt-get update -qy && \
     rm -rf /etc/ssl/certs/ssl-cert-snakeoil.pem \
            /etc/ssl/private/ssl-cert-snakeoil.key
 
-COPY stunnel.conf /etc/stunnel/stunnel.conf
 RUN mkdir -p /etc/stunnel/conf.d
+
+COPY stunnel.conf /etc/stunnel/stunnel.conf
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
