@@ -1,0 +1,6 @@
+certbot:
+  image: oriaks/certbot:latest
+  restart: unless-stopped
+  volumes:
+    - /etc/letsencrypt
+    - /var/www/html
