@@ -30,10 +30,16 @@ if [ "$1" = "${DAEMON}" ]; then
 
   if [ -n "${SSH_USER}" ]; then
     if ! getent passwd "${SSH_USER}" >/dev/null 2>&1; then
-      useradd -d "/home/${SSH_USER}" -m -s "${SSH_SHELL}" -U "${SSH_USER}"
+      useradd --extrausers -d "/home/${SSH_USER}" -m -s "${SSH_SHELL}" -U "${SSH_USER}"
+    else
+      usermod -d "/home/${SSH_USER}" -s "${SSH_SHELL}" "${SSH_USER}"
     fi
     if [ -n "${SSH_PASSWORD}" ]; then
       echo "${SSH_USER}:${SSH_PASSWORD}" | chpasswd -c SHA256
+      passwd "${SSH_USER}" <<- EOF
+	${SSH_PASSWORD}
+	${SSH_PASSWORD}
+EOF
     fi
   fi
 
