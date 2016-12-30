@@ -1,0 +1,6 @@
+cron:
+  image: oriaks/cron:latest
+  restart: unless-stopped
+  volumes:
+    - /var/spool/anacron
+    - /var/spool/cron/crontabs
