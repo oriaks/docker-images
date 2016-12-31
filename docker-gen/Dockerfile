@@ -1,7 +1,5 @@
-FROM debian:jessie
+FROM oriaks/docker:latest
 MAINTAINER Michael Richard <michael.richard@oriaks.com>
-
-ENV DEBIAN_FRONTEND noninteractive
 
 ENV DOCKER_GEN_VERSION 0.7.3
 
@@ -23,7 +21,7 @@ RUN apt-get update -qy && \
            /var/tmp/*
 
 RUN mkdir -p /etc/docker-gen/templates
-COPY nginx.tmpl /etc/docker-gen/templates/
+COPY docker-gen.cfg /etc/docker-gen/docker-gen.cfg
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
