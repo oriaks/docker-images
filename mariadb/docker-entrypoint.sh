@@ -1,5 +1,4 @@
 #!/bin/bash
-set -x
 
 PROCNAME='mysqld'
 DAEMON='/usr/sbin/mysqld'
