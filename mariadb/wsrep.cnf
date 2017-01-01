@@ -1,0 +1,29 @@
+[mysqld]
+binlog_format=row
+default_storage_engine=innodb
+innodb_autoinc_lock_mode=2
+innodb_buffer_pool_size=244M
+innodb_flush_log_at_trx_commit=0
+innodb_log_file_size=50M
+log_bin=/var/log/mysql/mariadb-bin
+log_bin_index=/var/log/mysql/mariadb-bin.index
+wsrep_cluster_address="gcomm://${WSREP_CLUSTER_ADDRESS}"
+wsrep_cluster_name="${WSREP_CLUSTER_NAME}"
+wsrep_new_cluster=${WSREP_NEW_CLUSTER}
+wsrep_node_address="${WSREP_NODE_ADDRESS}"
+wsrep_node_name="${WSREP_NODE_NAME}"
+wsrep_on=on
+wsrep_provider=/usr/lib/libgalera_smm.so
+wsrep_provider_options="gmcast.listen_addr=tcp://0.0.0.0:4567; ist.recv_addr=${WSREP_NODE_ADDRESS}:4568; pc.weight=${WSREP_PC_WEIGHT}; socket.ssl_ca=/etc/mysql/certs/ca.crt; socket.ssl_cert=/etc/mysql/certs/server.crt; socket.ssl_key=/etc/mysql/certs/server.key"
+wsrep_sst_auth="${WSREP_SST_USER}:${WSREP_SST_PASSWORD}"
+wsrep_sst_method=xtrabackup-v2
+wsrep_sst_receive_address="${WSREP_NODE_ADDRESS}:4444"
+
+[sst]
+compressor="gzip"
+decompressor="gzip -dc"
+encrypt=2
+streamfmt=xbstream
+tca=/etc/mysql/certs/ca.crt
+tcert=/etc/mysql/certs/server.pem
+transferfmt=socat

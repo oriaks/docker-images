@@ -1,3 +1,5 @@
 [mysqld]
+bind-address=0.0.0.0
 skip-host-cache
 skip-name-resolve
+user=mysql

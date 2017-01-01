@@ -22,9 +22,12 @@ RUN apt-key adv --keyserver ha.pool.sks-keyservers.net --recv-keys 4D1BB29D63D98
 
 RUN apt-get update -qy && \
     apt-get install -qy \
+            galera-3 \
+            gettext-base \
             mariadb-client \
             mariadb-server \
             percona-xtrabackup \
+            ssl-cert \
             && \
     apt-get autoremove -qy --purge \
             && \
@@ -34,16 +37,22 @@ RUN apt-get update -qy && \
            /var/tmp/* \
            && \
     rm -rf /var/lib/mysql/* \
-           /var/log/mysql/*
-
-RUN sed -Ei 's/^(bind-address|log)/#&/g;' /etc/mysql/my.cnf
+           /var/log/mysql/* \
+           && \
+    rm -rf /etc/ssl/certs/ssl-cert-snakeoil.pem \
+           /etc/ssl/private/ssl-cert-snakeoil.key
 
 COPY docker.cnf /etc/mysql/conf.d/docker.cnf
+COPY ssl.cnf /etc/mysql/conf.d/ssl.cnf
+COPY wsrep.cnf /etc/mysql/conf.d/wsrep.cnf.template
 
 COPY docker-entrypoint.sh /docker-entrypoint.sh
 RUN chmod +x /docker-entrypoint.sh
 
 EXPOSE 3306/tcp
+EXPOSE 4444/tcp
+EXPOSE 4567/tcp
+EXPOSE 4568/tcp
 VOLUME /var/lib/mysql
 
 ENTRYPOINT [ "/docker-entrypoint.sh" ]
