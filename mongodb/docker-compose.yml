@@ -1,8 +1,7 @@
-version: '2'
-
-services:
-   db:
-     image: oriaks/mongodb:latest
-     restart: always
-     ports:
-       - "27017:27017"
+mongodb:
+  image: oriaks/mongodb:latest
+  ports:
+    - 0.0.0.0:27017:27017/tcp
+  restart: unless-stopped
+  volumes:
+    - /var/lib/mongodb
