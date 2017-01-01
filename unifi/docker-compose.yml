@@ -1,0 +1,22 @@
+mongodb:
+  image: oriaks/mongodb:latest
+  ports:
+    - 0.0.0.0:27017:27017/tcp
+  restart: unless-stopped
+  volumes:
+    - /opt/mongo/lib
+
+unifi:
+  image: oriaks/unifi:latest
+  links:
+    - mongodb
+  ports:
+    - 0.0.0.0:3478:3478/tcp
+    - 0.0.0.0:6789:6789/tcp
+    - 0.0.0.0:8080:8080/tcp
+    - 0.0.0.0:8443:8443/tcp
+    - 0.0.0.0:8843:8843/tcp
+    - 0.0.0.0:8880:8880/tcp
+  restart: unless-stopped
+  volumes:
+    - /usr/lib/unifi/data
