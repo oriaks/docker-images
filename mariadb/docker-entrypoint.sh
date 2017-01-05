@@ -60,8 +60,9 @@ if [ "$1" = "${DAEMON}" ]; then
 
   SQL=()
 
+  SQL+=( "CREATE USER IF NOT EXISTS 'root'@'localhost';" )
+  SQL+=( "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION;" )
   if [ -n "${MYSQL_ROOT_PASSWORD}" ]; then
-    SQL+=( "CREATE USER IF NOT EXISTS 'root'@'localhost';" )
     SQL+=( "SET PASSWORD FOR 'root'@'localhost'=PASSWORD('${MYSQL_ROOT_PASSWORD}');" )
   fi
   SQL+=( "DELETE FROM mysql.user WHERE user='root' AND host!='localhost';" )
