@@ -26,6 +26,7 @@ RUN apt-get update -qy && \
             dcraw \
             fdkaac \
             ffmpeg \
+            file \
             flac \
             ghostscript \
             gpac \
