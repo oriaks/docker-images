@@ -1,0 +1,51 @@
+samba:
+  image: oriaks/samba:latest
+  dns:
+    - 127.0.0.1
+  dns_search:
+    - test.com
+  domainname: test.com
+  environment:
+    SAMBA_DOMAIN: TEST
+    SAMBA_HOSTNAME: DC1
+#    SAMBA_IP: 192.168.0.10
+    SAMBA_PASSWORD: Admin1234
+    SAMBA_REALM: TEST.COM
+  hostname: dc1
+  ports:
+#    - 0.0.0.0:53:53/tcp
+#    - 0.0.0.0:53:53/udp
+    - 0.0.0.0:88:88/tcp
+    - 0.0.0.0:88:88/udp
+    - 0.0.0.0:135:135/tcp
+    - 0.0.0.0:137:137/udp
+    - 0.0.0.0:138:138/udp
+    - 0.0.0.0:139:139/tcp
+    - 0.0.0.0:389:389/tcp
+    - 0.0.0.0:389:389/udp
+    - 0.0.0.0:445:445/tcp
+    - 0.0.0.0:464:464/tcp
+    - 0.0.0.0:464:464/udp
+    - 0.0.0.0:636:636/tcp
+    - 0.0.0.0:1024:1024/tcp
+    - 0.0.0.0:3268:3268/tcp
+    - 0.0.0.0:3269:3269/tcp
+  restart: unless-stopped
+  tty: true
+  volumes:
+    - /etc/samba
+    - /var/cache/samba
+    - /var/lib/samba
+    - /var/run/samba
+
+ldap-account-manager:
+  image: oriaks/ldap-account-manager:latest
+  environment:
+    LDAP_DOMAIN: test.com
+    LDAP_USER: cn=Administrator,cn=Users,dc=test,dc=com
+  links:
+    - samba:ldap
+  ports:
+    - 0.0.0.0:80:80/tcp
+    - 0.0.0.0:443:443/tcp
+  restart: unless-stopped
