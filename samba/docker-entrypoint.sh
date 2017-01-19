@@ -18,7 +18,7 @@ elif [ "${1}" = "${PROCNAME}" ]; then
 fi
 
 if [ "$1" = "${DAEMON}" ]; then
-  export SAMBA_DNS_FORWARDER="${SAMBA_DNS_FORWARDER:='8.8.8.8'}"
+  export SAMBA_DNS_FORWARDER="${SAMBA_DNS_FORWARDER:=8.8.8.8}"
   export SAMBA_DOMAIN="${SAMBA_DOMAIN:=}"
   export SAMBA_HOSTNAME="${SAMBA_HOSTNAME:=}"
   export SAMBA_IP="${SAMBA_IP:=`ip -o addr show dev eth0 scope global | awk -F '[ /]+' '{print $4}'`}"
