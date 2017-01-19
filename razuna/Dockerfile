@@ -36,6 +36,7 @@ RUN apt-get update -qy && \
             mp4v2-utils \
             openjdk-8-jre-headless \
             vorbis-tools \
+            xxd \
             && \
     apt-get autoremove -qy --purge \
             && \
