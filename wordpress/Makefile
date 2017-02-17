@@ -1,5 +1,5 @@
 NAME = oriaks/wordpress
-VERSION = 4.6
+VERSION = 4.7
 
 .PHONY: all build tag_latest
 

@@ -15,7 +15,7 @@ RUN apt-get update -qy && \
            /var/lib/apt/lists/* \
            /var/tmp/*
 
-ENV WORDPRESS_VERSION 4.6.1
+ENV WORDPRESS_VERSION 4.7.2
 
 RUN apt-get update -qy && \
     apt-get install -qy \
