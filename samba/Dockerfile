@@ -5,6 +5,7 @@ ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -qy && \
     apt-get install -qy \
+            ca-certificates \
             samba \
             samba-dsdb-modules \
             samba-vfs-modules \
