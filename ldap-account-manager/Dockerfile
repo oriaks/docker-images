@@ -4,6 +4,7 @@ MAINTAINER Michael Richard <michael.richard@oriaks.com>
 ENV DEBIAN_FRONTEND noninteractive
 RUN apt-get update -qy && \
     apt-get install -qy \
+            locales \
             php5-gd \
             php5-imagick \
             php5-json \
@@ -37,7 +38,10 @@ RUN apt-get update -qy && \
 COPY apache2.conf /etc/apache2/vhost.d/default.conf
 COPY config.cfg /var/www/html/config/config.cfg
 COPY ldap.conf /etc/ldap/ldap.conf
+COPY locale.gen /etc/locale.gen
 COPY windows_samba4.conf /var/www/html/config/windows_samba4.conf
+
+RUN locale-gen
 
 RUN chown -R root:root /var/www/html && \
     chmod -R u=rwX,g=rX,o=rX /var/www/html && \
