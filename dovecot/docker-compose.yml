@@ -1,0 +1,18 @@
+dovecot:
+  image: oriaks/dovecot:latest
+  environment:
+    DOVECOT_POSTMASTER: postmaster@test.com
+    LDAP_DOMAIN: test.com
+    LDAP_PASSWORD: Admin1234
+    LDAP_USER: cn=Administrator,cn=Users,dc=test,dc=com
+  expose:
+    - 3659/tcp
+  ports:
+    - 0.0.0.0:110:110/tcp
+    - 0.0.0.0:143:143/tcp
+    - 0.0.0.0:993:993/tcp
+    - 0.0.0.0:995:995/tcp
+    - 0.0.0.0:4190:4190/tcp
+  restart: unless-stopped
+  volumes:
+    - /var/mail
