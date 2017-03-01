@@ -1,0 +1,10 @@
+sogo:
+  image: oriaks/sogo:latest
+  environment:
+    LDAP_DOMAIN: test
+    LDAP_ORGANIZATION: Test
+    LDAP_PASSWORD: test
+  restart: unless-stopped
+  volumes:
+    - /etc/ldap/slapd.d
+    - /var/lib/ldap
