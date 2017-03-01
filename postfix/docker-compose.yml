@@ -1,0 +1,15 @@
+postfix:
+  image: oriaks/postfix:latest
+  domainname: test.com
+  environment:
+    LDAP_DOMAIN: test.com
+    LDAP_PASSWORD: Admin1234
+    LDAP_USER: cn=Administrator,cn=Users,dc=test,dc=com
+    SMTP_MAILNAME: test.com
+  ports:
+    - 0.0.0.0:25:25/tcp
+    - 0.0.0.0:465:465/tcp
+    - 0.0.0.0:587:587/tcp
+  restart: unless-stopped
+  volumes:
+    - /var/spool/postfix
