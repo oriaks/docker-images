@@ -100,6 +100,8 @@ if [ "$1" = "${HTTPD_DAEMON}" ]; then
   [ -n "${MAIL_USER}"     ] && SSMTP+=( "AuthUser=${MAIL_USER}" )
   [ -n "${VIRTUAL_HOST}"  ] && SSMTP+=( "hostname=${VIRTUAL_HOST%%,*}" )
 
+  SSMTP+=( "FromLineOverride=YES" )
+
   printf "%s\n" "${REVALIASES[@]}" > /etc/ssmtp/revaliases
   printf "%s\n" "${SSMTP[@]}" > /etc/ssmtp/ssmtp.conf
 

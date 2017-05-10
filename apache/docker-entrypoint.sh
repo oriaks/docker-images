@@ -18,26 +18,26 @@ elif [ "${1}" = "${PROCNAME}" ]; then
 fi
 
 if [ "$1" = "${DAEMON}" ]; then
-  export MAIL_FROM="${MAIL_FROM:=}"
-  export MAIL_HOST="${MAIL_HOST:=smtp}"
-  export MAIL_PASSWORD="${MAIL_PASSWORD:=}"
-  export MAIL_STARTTLS="${MAIL_STARTTLS:=NO}"
-  export MAIL_TLS="${MAIL_TLS:=NO}"
-  export MAIL_USER="${MAIL_USER:=}"
-  export VIRTUAL_HOST="${VIRTUAL_HOST:=}"
+  MAIL_FROM="${MAIL_FROM:=}"
+  MAIL_HOST="${MAIL_HOST:=smtp}"
+  MAIL_PASSWORD="${MAIL_PASSWORD:=}"
+  MAIL_STARTTLS="${MAIL_STARTTLS:=NO}"
+  MAIL_TLS="${MAIL_TLS:=NO}"
+  MAIL_USER="${MAIL_USER:=}"
+  VIRTUAL_HOST="${VIRTUAL_HOST:=}"
 
   if [ -z "${MAIL_PORT}" ]; then
     if [ "${MAIL_STARTTLS}" = "YES" ]; then
-      export MAIL_PORT='587'
+      MAIL_PORT='587'
     elif [ "${MAIL_TLS}" = "YES" ]; then
-      export MAIL_PORT='465'
+      MAIL_PORT='465'
     else
-      export MAIL_PORT='25'
+      MAIL_PORT='25'
     fi
   fi
 
   if [ "${MAIL_STARTTLS}" = "YES" ]; then
-    export MAIL_TLS='YES'
+    MAIL_TLS='YES'
   fi
 
   if [ ! -f /etc/ssl/certs/ssl-cert-snakeoil.pem -o ! -f /etc/ssl/private/ssl-cert-snakeoil.key ]; then
@@ -54,6 +54,8 @@ if [ "$1" = "${DAEMON}" ]; then
   [ -n "${MAIL_TLS}"      ] && SSMTP+=( "UseTLS=${MAIL_TLS}" )
   [ -n "${MAIL_USER}"     ] && SSMTP+=( "AuthUser=${MAIL_USER}" )
   [ -n "${VIRTUAL_HOST}"  ] && SSMTP+=( "hostname=${VIRTUAL_HOST%%,*}" )
+
+  SSMTP+=( "FromLineOverride=YES" )
 
   printf "%s\n" "${REVALIASES[@]}" > /etc/ssmtp/revaliases
   printf "%s\n" "${SSMTP[@]}" > /etc/ssmtp/ssmtp.conf
