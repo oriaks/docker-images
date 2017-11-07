@@ -1,46 +1,59 @@
-FROM debian:jessie
-MAINTAINER Michael Richard <michael.richard@oriaks.com>
+FROM debian:stretch
+
+ARG OPENLDAP_VERSION=2.4.44
+
+LABEL description="OpenLDAP Server" \
+      maintainer="Michael Richard <michael.richard.ing@gmail.com>" \
+      version="${OPENLDAP_VERSION}"
 
 ENV DEBIAN_FRONTEND noninteractive
 
 RUN apt-get update -qy && \
     apt-get install -qy \
             ca-certificates \
-            ldap-utils \
+            "ldap-utils=${OPENLDAP_VERSION}+*" \
             ldapvi \
             schema2ldif \
-            slapd \
-            slapd-smbk5pwd \
+            "slapd=${OPENLDAP_VERSION}+*" \
+            "slapd-smbk5pwd=${OPENLDAP_VERSION}+*" \
             ssl-cert \
             vim-tiny \
             && \
     apt-get autoremove -qy --purge \
             && \
     apt-get clean -qy && \
-    rm -rf /tmp/* \
-           /var/lib/apt/lists/* \
-           /var/tmp/* \
-           && \
     rm -rf /etc/ldap/slapd.d/* \
            /etc/ssl/certs/ssl-cert-snakeoil.pem \
            /etc/ssl/private/ssl-cert-snakeoil.key \
-           /var/lib/ldap/*
+           /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/lib/ldap/* \
+           /var/tmp/*
 
 RUN usermod -aG ssl-cert openldap
 
-COPY ldap.conf /etc/ldap/ldap.conf
-COPY ldaprc /root/.ldaprc
-COPY ldapvirc /root/.ldapvirc
-COPY schema/ /etc/ldap/schema/
-COPY slapd.init.ldif /usr/share/slapd/slapd.init.ldif
+# TEMPORARY FOR DEBUG PURPOSE
+RUN apt-get update -qy && \
+    apt-get install -qy \
+            procps \
+            && \
+    apt-get autoremove -qy --purge \
+            && \
+    apt-get clean -qy && \
+    rm -rf /tmp/* \
+           /var/lib/apt/lists/* \
+           /var/tmp/*
 
-COPY docker-entrypoint.sh /docker-entrypoint.sh
-RUN chmod +x /docker-entrypoint.sh
+COPY assets/schema/ /etc/ldap/schema/
+COPY assets/slapd.init.ldif /usr/share/slapd/slapd.init.ldif
 
-EXPOSE 389/tcp
-EXPOSE 636/tcp
-VOLUME /etc/ldap/slapd.d
-VOLUME /var/lib/ldap
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
 
-ENTRYPOINT [ "/docker-entrypoint.sh" ]
+EXPOSE 389/tcp \
+       636/tcp
+VOLUME /etc/ldap/slapd.d \
+       /var/lib/ldap
+
+ENTRYPOINT [ "/usr/local/bin/docker-entrypoint.sh" ]
 CMD [ "slapd" ]

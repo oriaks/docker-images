@@ -1,3 +1,0 @@
-profile default
-host: ldapi:///
-sasl-mech: EXTERNAL

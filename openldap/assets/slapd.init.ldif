@@ -65,8 +65,10 @@ objectClass: olcModuleList
 cn: module{0}
 olcModulePath: /usr/lib/ldap
 olcModuleLoad: back_@BACKEND@
+olcModuleLoad: accesslog
 olcModuleLoad: memberof
 olcModuleLoad: refint
+olcModuleLoad: syncprov
 
 # Set defaults for the backend
 dn: olcBackend=@BACKEND@,cn=config
@@ -78,82 +80,75 @@ dn: olcDatabase=@BACKEND@,cn=config
 objectClass: olcDatabaseConfig
 objectClass: @BACKENDOBJECTCLASS@
 olcDatabase: @BACKEND@
+# Checkpoint the database periodically in case of system
+# failure and to speed slapd shutdown.
 olcDbCheckpoint: 512 30
 @BACKENDOPTIONS@
+# Save the time that the entry gets modified, for database #1
 olcLastMod: TRUE
+# The base of your directory in database #1
 olcSuffix: @SUFFIX@
-olcDbDirectory: /var/lib/ldap
+# Where the database file are physically stored for database #1
+olcDbDirectory: /var/lib/ldap/@SUFFIX@
+# olcRootDN directive for specifying a superuser on the database. This
+# is needed for syncrepl.
 olcRootDN: cn=admin,@SUFFIX@
 olcRootPW: @PASSWORD@
-olcDbIndex: entryCSN,entryUUID eq
-olcDbIndex: objectClass eq
-olcDbIndex: uid,krb5PrincipalName eq
-olcDbIndex: cn,givenName,sn eq,pres,sub
-olcDbIndex: uidNumber,gidNumber eq
-olcDbIndex: member,memberUid,memberOf eq
-olcDbIndex: mail eq,pres,sub
-olcAccess: to attrs=member,mailRoutingAddress
-  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
-  by dn.exact="cn=admin,@SUFFIX@" manage
+# Indexing options for database #1
+olcDbIndex: entryCSN,entryUUID,objectClass eq
+olcDbIndex: krb5PrincipalName,uid eq
+olcDbIndex: cn,givenName,mail,sn eq,pres,sub
+olcDbIndex: gidNumber,uidNumber eq
+olcDbIndex: member,memberOf,memberUid eq
+olcAccess: to *
+  by dn.base="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
+  by dn.base="cn=admin,@SUFFIX@" manage
   by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
-  by dnattr=owner write
-  by users read
-  by * none
-olcAccess: to attrs=krb5KDCFlags,krb5MaxLife,krb5MaxRenew,sambaNTPassword,shadowLastChange,SIPIdentityPassword,userPassword
-  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
-  by dn.exact="cn=admin,@SUFFIX@" manage
-  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
-  by self write
-  by users read
-  by anonymous auth
-  by * none
+  by * break
 olcAccess: to attrs=ipHostNumber,krb5PrincipalName,macAddress,objectClass,ou,owner,uid
-  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
-  by dn.exact="cn=admin,@SUFFIX@" manage
-  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
   by self read
   by users read
   by anonymous auth
   by * none
+olcAccess: to attrs=mailRoutingAddress,member
+  by dnattr=owner write
+  by users read
+  by * none
+olcAccess: to attrs=krb5KDCFlags,krb5MaxLife,krb5MaxRenew,sambaNTPassword,shadowLastChange,SIPIdentityPassword,userPassword
+  by self write
+  by users read
+  by anonymous auth
+  by * none
 olcAccess: to attrs=krb5Key,krb5KeyVersionNumber,sshPublicKey
-  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
-  by dn.exact="cn=admin,@SUFFIX@" manage
-  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
   by self write
   by anonymous auth
   by * none
 olcAccess: to attrs=cn,givenName,displayName,employeeType,l,mail,mobile,o,postalCode,preferredLanguage,sn,st,street,telephoneNumber,title
-  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
-  by dn.exact="cn=admin,@SUFFIX@" manage
-  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
   by self write
   by users read
   by * none
 olcAccess: to *
-  by dn.exact="gidNumber=0+uidNumber=0,cn=peercred,cn=external,cn=auth" manage
-  by dn.exact="cn=admin,@SUFFIX@" manage
-  by group.exact="cn=admin,ou=Groups,@SUFFIX@" manage
   by users read
   by * none
 
 # Backend memberOf overlay
-dn: olcOverlay={0}memberof,olcDatabase={1}@BACKEND@,cn=config
-objectClass: olcOverlayConfig
+dn: olcOverlay={1}memberof,olcDatabase={1}@BACKEND@,cn=config
+olcOverlay: {1}memberof
 objectClass: olcMemberOf
-olcOverlay: {0}memberof
+objectClass: olcOverlayConfig
 olcMemberOfDangling: ignore
-olcMemberOfRefInt: TRUE
 olcMemberOfGroupOC: groupOfNames
 olcMemberOfMemberAD: member
 olcMemberOfMemberOfAD: memberOf
+olcMemberOfRefInt: TRUE
 
 # Backend refint overlay
-dn: olcOverlay={1}refint,olcDatabase={1}@BACKEND@,cn=config
+dn: olcOverlay={2}refint,olcDatabase={1}@BACKEND@,cn=config
+olcOverlay: {2}refint
 objectClass: olcOverlayConfig
 objectClass: olcRefintConfig
-olcOverlay: {1}refint
-olcRefintAttribute: owner
 olcRefintAttribute: manager
-olcRefintAttribute: uniqueMember
 olcRefintAttribute: member
 olcRefintAttribute: memberOf
+olcRefintAttribute: owner
+olcRefintAttribute: uniqueMember
