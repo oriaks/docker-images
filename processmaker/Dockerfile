@@ -10,6 +10,8 @@ RUN apt-get update -qy && \
             php5-ldap \
             php5-mcrypt \
             php5-mysql \
+            unixodbc \
+            php5-odbc \
             && \
     apt-get autoremove -qy --purge \
             && \
